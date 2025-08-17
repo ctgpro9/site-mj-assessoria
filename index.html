@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MJ Assessoria Empresarial - Soluções Contábeis</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" xintegrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* Estilos personalizados */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5EBE0; /* Cor de fundo bege solicitada */
+            color: #4A4A4A;
+        }
+        .logo-main-text {
+            font-family: 'Playfair Display', serif;
+            color: #3a3a3a;
+            font-weight: 700;
+            font-size: 2.5rem;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+        .logo-sub-text {
+            font-family: 'Inter', sans-serif;
+            color: #5c5c5c;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: -4px;
+        }
+        .hero-section {
+            background: linear-gradient(to right, rgba(245, 235, 224, 0.9), rgba(245, 235, 224, 0.7)), url('https://images.unsplash.com/photo-1554224155-1696413565d3?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+        }
+        .service-card {
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .service-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .service-card.active {
+            border-color: #D5B4B4;
+            background-color: #EADEDA;
+        }
+        #service-details {
+            transition: all 0.5s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        #service-details.open {
+            max-height: 500px; /* Altura suficiente para o conteúdo */
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+        .specialist-card {
+            transition: all 0.3s ease-in-out;
+        }
+        .specialist-card:hover {
+            transform: scale(1.03);
+            background-color: #FDF6F0;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+            border-radius: 0.5rem;
+        }
+        .testimonial-card {
+            transition: transform 0.3s ease-in-out;
+        }
+        .testimonial-card:hover {
+            transform: scale(1.05);
+        }
+        /* Estilos para o carrossel */
+        .carousel-container {
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+        }
+        .carousel-item {
+            flex: 0 0 100%;
+        }
+        @media (min-width: 768px) {
+            .carousel-item {
+                flex: 0 0 50%;
+            }
+        }
+        @media (min-width: 1024px) {
+            .carousel-item {
+                flex: 0 0 33.3333%;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Cabeçalho -->
+    <header class="bg-transparent absolute top-0 left-0 w-full z-10 py-4 px-6 md:px-12">
+        <div class="container mx-auto flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#inicio" class="flex flex-col items-start">
+                <span class="logo-main-text">MJ</span>
+                <span class="logo-sub-text">Assessoria Empresarial</span>
+            </a>
+            <!-- Navegação -->
+            <nav class="hidden md:flex space-x-8 text-gray-700 font-medium">
+                <a href="#inicio" class="hover:text-[#BF9270]">Início</a>
+                <a href="#servicos" class="hover:text-[#BF9270]">Serviços</a>
+                <a href="#quemsomos" class="hover:text-[#BF9270]">Quem Somos</a>
+                <a href="#contato" class="bg-[#BF9270] text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors">Contato</a>
+            </nav>
+            <!-- Menu Mobile -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-700 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Navegação Mobile (oculta por padrão) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-[#F5EBE0] bg-opacity-95 mt-2 rounded-lg shadow-lg">
+            <a href="#inicio" class="block text-center py-3 px-4 text-gray-700 hover:bg-[#EADEDA]">Início</a>
+            <a href="#servicos" class="block text-center py-3 px-4 text-gray-700 hover:bg-[#EADEDA]">Serviços</a>
+            <a href="#quemsomos" class="block text-center py-3 px-4 text-gray-700 hover:bg-[#EADEDA]">Quem Somos</a>
+            <a href="#contato" class="block text-center py-3 px-4 text-white bg-[#BF9270] hover:bg-opacity-90">Contato</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Seção Hero -->
+        <section id="inicio" class="hero-section h-screen flex items-center justify-center text-center">
+            <div class="container mx-auto px-6">
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-800 leading-tight mb-4 animate-fade-in-down">Inteligência Contábil para o <span class="text-[#BF9270]">Sucesso</span> do seu Negócio</h1>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">Oferecemos mais que contabilidade, entregamos assessoria estratégica para impulsionar o crescimento da sua empresa.</p>
+                <a href="#contato" class="bg-[#BF9270] text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-opacity-90 transition-transform hover:scale-105">Fale com um Especialista</a>
+            </div>
+        </section>
+
+        <!-- Seção de Serviços -->
+        <section id="servicos" class="py-20 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl font-bold mb-2">Nossos Serviços</h2>
+                <p class="text-gray-500 mb-12 max-w-2xl mx-auto">Soluções completas e personalizadas para cada fase do seu negócio. Clique em um serviço para saber mais.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                    <!-- Cards de Serviço -->
+                    <div class="service-card bg-[#F5EBE0] p-8 rounded-lg border-2 border-transparent" data-service="fiscal"><i class="fas fa-calculator text-4xl text-[#BF9270] mb-4"></i><h3 class="text-xl font-semibold mb-2">Contabilidade Fiscal</h3></div>
+                    <div class="service-card bg-[#F5EBE0] p-8 rounded-lg border-2 border-transparent" data-service="folha"><i class="fas fa-users text-4xl text-[#BF9270] mb-4"></i><h3 class="text-xl font-semibold mb-2">Gestão de Folha de Pagamento</h3></div>
+                    <div class="service-card bg-[#F5EBE0] p-8 rounded-lg border-2 border-transparent" data-service="cnpj"><i class="fas fa-file-signature text-4xl text-[#BF9270] mb-4"></i><h3 class="text-xl font-semibold mb-2">Abertura e Baixa de CNPJ</h3></div>
+                    <div class="service-card bg-[#F5EBE0] p-8 rounded-lg border-2 border-transparent" data-service="consultoria"><i class="fas fa-lightbulb text-4xl text-[#BF9270] mb-4"></i><h3 class="text-xl font-semibold mb-2">Consultoria Empresarial</h3></div>
+                </div>
+
+                <!-- Detalhes do Serviço -->
+                <div id="service-details" class="bg-gray-50 rounded-lg text-left p-6"><div id="service-content" class="text-gray-600"></div></div>
+            </div>
+        </section>
+
+        <!-- Seção de Depoimentos -->
+        <section id="depoimentos" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-2">O que nossos clientes falam</h2>
+                    <p class="text-gray-500 max-w-2xl mx-auto">A satisfação de quem confia em nosso trabalho é a nossa maior conquista.</p>
+                </div>
+                <div class="relative">
+                    <div class="carousel-container">
+                        <div id="carousel-track" class="carousel-track">
+                            <!-- Depoimentos serão inseridos aqui -->
+                        </div>
+                    </div>
+                    <button id="prevBtn" class="absolute top-1/2 left-0 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md z-10"><i class="fas fa-chevron-left text-[#BF9270]"></i></button>
+                    <button id="nextBtn" class="absolute top-1/2 right-0 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md z-10"><i class="fas fa-chevron-right text-[#BF9270]"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Quem Somos -->
+        <section id="quemsomos" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="w-full max-w-4xl mx-auto text-center">
+                    <h2 class="text-3xl font-bold mb-4">Conheça Nossas Especialistas</h2>
+                    <p class="text-gray-500 mb-8">Unimos experiência e inovação para oferecer a melhor assessoria para sua empresa.</p>
+                    
+                    <div class="mb-12">
+                        <img src="https://github.com/ctgpro9/site-mj-assessoria/blob/main/MJ.jpg?raw=true" alt="Proprietárias Jaqueline Moreira e Eduarda Apolinário" class="rounded-lg shadow-2xl w-full max-w-2xl mx-auto border-4 border-[#BF9270] transition-transform duration-300 hover:scale-105" onerror="this.onerror=null; this.src='https://placehold.co/600x400/EADEDA/4A4A4A?text=Nossas+Especialistas';">
+                    </div>
+
+                    <div class="space-y-8 md:space-y-0 md:flex md:gap-8 md:justify-center">
+                        <!-- Card Jaqueline -->
+                        <div class="specialist-card p-4 md:w-1/2"><h3 class="text-2xl font-bold text-[#BF9270] mb-3">Jaqueline Moreira</h3><div class="border border-[#D5B4B4] rounded-lg p-4 space-y-3 text-left"><p class="flex items-start"><i class="fas fa-check-circle text-[#BF9270] mr-3 mt-1"></i><span>Formada em Administração com mais de 10 anos de sólida experiência.</span></p><p class="flex items-start"><i class="fas fa-check-circle text-[#BF9270] mr-3 mt-1"></i><span>Especialista em Folha de Pagamento e Contabilidade Geral.</span></p><p class="flex items-start"><i class="fas fa-check-circle text-[#BF9270] mr-3 mt-1"></i><span>Expertise em otimização de processos e máxima conformidade legal.</span></p></div></div>
+                        <!-- Card Eduarda -->
+                        <div class="specialist-card p-4 md:w-1/2"><h3 class="text-2xl font-bold text-[#BF9270] mb-3">Eduarda Apolinário</h3><div class="border border-[#D5B4B4] rounded-lg p-4 space-y-3 text-left"><p class="flex items-start"><i class="fas fa-check-circle text-[#BF9270] mr-3 mt-1"></i><span>Formada em Ciências Contábeis com mais de 4 anos de experiência.</span></p><p class="flex items-start"><i class="fas fa-check-circle text-[#BF9270] mr-3 mt-1"></i><span>Especialista na área fiscal, societária e folha de pagamento.</span></p><p class="flex items-start"><i class="fas fa-check-circle text-[#BF9270] mr-3 mt-1"></i><span>Expert em legalização: abertura, alteração e baixa de CNPJ.</span></p></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Nova Seção de Contato -->
+        <section id="contato" class="py-20">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl font-bold mb-4">Pronto para impulsionar seu negócio?</h2>
+                <p class="text-gray-500 mb-12 max-w-2xl mx-auto">Escolha o melhor canal e entre em contato conosco. Estamos prontos para atender você.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Contatos -->
+                    <a href="https://wa.me/5551992197198" target="_blank" class="group flex flex-col items-center justify-center p-4"><i class="fab fa-whatsapp text-6xl text-green-500 mb-4 transition-transform duration-300 group-hover:scale-110"></i><h3 class="text-xl font-semibold mb-1">WhatsApp</h3><p class="text-gray-600">51 9 9219-7198</p></a>
+                    <a href="mailto:mj.assessoriasadm@gmail.com" class="group flex flex-col items-center justify-center p-4"><i class="fas fa-envelope-open-text text-6xl text-blue-500 mb-4 transition-transform duration-300 group-hover:scale-110"></i><h3 class="text-xl font-semibold mb-1">E-mail</h3><p class="text-gray-600">mj.assessoriasadm@gmail.com</p></a>
+                    <a href="https://instagram.com/mjassessoriaempresarial" target="_blank" class="group flex flex-col items-center justify-center p-4"><i class="fab fa-instagram text-6xl text-pink-500 mb-4 transition-transform duration-300 group-hover:scale-110"></i><h3 class="text-xl font-semibold mb-1">Instagram</h3><p class="text-gray-600">@mjassessoriaempresarial</p></a>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Rua+das+Azaleias,+188+-+Jardim+Igara,+Canoas+-+92410-520" target="_blank" class="group flex flex-col items-center justify-center p-4"><i class="fas fa-map-marker-alt text-6xl text-red-500 mb-4 transition-transform duration-300 group-hover:scale-110"></i><h3 class="text-xl font-semibold mb-1">Endereço</h3><p class="text-gray-600 text-sm">Rua das Azaleias, 188, Canoas/RS</p></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-6 text-center">
+                <p class="text-gray-400 text-sm">&copy; 2025 MJ Assessoria Empresarial. Todos os direitos reservados.</p>
+            </div>
+        </footer>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Lógica do Menu Mobile
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+            // Lógica da Seção de Serviços
+            const serviceCards = document.querySelectorAll('.service-card');
+            const detailsContainer = document.getElementById('service-details');
+            const contentContainer = document.getElementById('service-content');
+            let currentService = null;
+            const serviceDetailsContent = {
+                fiscal: { title: 'Contabilidade Fiscal e Tributária', description: 'Garantimos a total conformidade da sua empresa com as obrigações fiscais. Realizamos o planejamento tributário para otimizar sua carga de impostos, apuração de tributos (Simples Nacional, Lucro Presumido e Lucro Real) e entrega de todas as declarações acessórias, evitando multas e problemas com o fisco.' },
+                folha: { title: 'Gestão de Folha de Pagamento', description: 'Cuidamos de todo o processo de folha de pagamento, desde o cálculo de salários, férias e 13º, até a gestão de benefícios e encargos sociais (INSS, FGTS). Oferecemos suporte completo em admissões, demissões e eSocial, garantindo segurança jurídica e tranquilidade para sua equipe.' },
+                cnpj: { title: 'Legalização de Empresas (Abertura, Alteração e Baixa)', description: 'Assessoramos você em todas as fases da vida do seu CNPJ. Realizamos o processo de abertura de forma rápida e segura, escolhendo o melhor regime tributário. Também cuidamos de alterações contratuais (endereço, sócios, atividades) e do processo de encerramento (baixa) da empresa.' },
+                consultoria: { title: 'Consultoria Empresarial Estratégica', description: 'Vamos além da contabilidade tradicional. Através da análise de seus resultados, oferecemos insights valiosos para a tomada de decisão. Auxiliamos na gestão financeira, precificação, análise de viabilidade de projetos e planejamento estratégico para garantir o crescimento sustentável do seu negócio.' }
+            };
+            serviceCards.forEach(card => {
+                card.addEventListener('click', function () {
+                    const serviceKey = this.dataset.service;
+                    if (currentService === serviceKey) {
+                        detailsContainer.classList.remove('open');
+                        this.classList.remove('active');
+                        currentService = null;
+                        return;
+                    }
+                    serviceCards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    const content = serviceDetailsContent[serviceKey];
+                    contentContainer.innerHTML = `<h4 class="text-2xl font-bold text-gray-800 mb-3">${content.title}</h4><p>${content.description}</p>`;
+                    detailsContainer.classList.add('open');
+                    currentService = serviceKey;
+                });
+            });
+            function initializeServices() {
+                const initialServiceKey = 'fiscal';
+                const initialCard = document.querySelector(`.service-card[data-service="${initialServiceKey}"]`);
+                if (initialCard) {
+                    initialCard.click();
+                }
+            }
+            initializeServices();
+
+            // Lógica da Seção de Depoimentos (Carrossel Infinito)
+            const testimonials = [
+                { name: 'Gilson C.', company: 'Empresa de Beneficiamento de Metais', feedback: 'Excelente trabalho da MJ Assessoria! As melhores profissionais que temos na área contábil. Sempre precisas e atenciosas, transformaram a gestão da nossa empresa.' },
+                { name: 'Marcio A.', company: 'Comércio', feedback: 'Minha empresa estava inativa desde 2012, com diversas pendências. Com a assessoria completa da MJ, consegui não apenas regularizar toda a situação, mas também realizar a baixa do CNPJ de forma segura e eficiente. Um serviço impecável.' },
+                { name: 'Eduardo P.', company: 'Assistência Informática', feedback: 'A MJ Assessoria é sinônimo de tranquilidade. Elas cuidam de toda a burocracia com uma agilidade impressionante, o que me permite focar 100% no meu negócio de TI. Recomendo de olhos fechados!' },
+                { name: 'Vagner L.', company: 'Startup de Tecnologia', feedback: 'Para uma startup, ter parceiros ágeis é fundamental. Encontramos na MJ a assessoria contábil que entende nosso ritmo e nos ajuda a crescer de forma sustentável e organizada. Essenciais para o nosso sucesso.' },
+                { name: 'Elisangela P.', company: 'Comércio de Doces', feedback: 'Desde que a MJ assumiu a contabilidade do meu comércio, sinto muito mais segurança para tomar decisões. Elas são claras, objetivas e estão sempre disponíveis para ajudar. Fizeram toda a diferença na minha gestão.' },
+                { name: 'Sara M.', company: 'Manicure Autônoma', feedback: 'Como autônoma, eu tinha muita dificuldade com a parte burocrática. A equipe da MJ foi incrível, me ajudaram a organizar minhas finanças e a entender tudo sobre impostos. Hoje trabalho com muito mais paz e segurança.' }
+            ];
+            const track = document.getElementById('carousel-track');
+            
+            // Popula o carrossel com os depoimentos
+            testimonials.forEach(t => {
+                const item = document.createElement('div');
+                item.className = 'carousel-item p-4';
+                item.innerHTML = `
+                    <div class="testimonial-card bg-white p-8 rounded-lg h-full flex flex-col justify-between shadow-lg">
+                        <p class="text-gray-600 italic mb-4">"${t.feedback}"</p>
+                        <div>
+                            <p class="font-bold text-lg text-[#BF9270]">${t.name}</p>
+                            <p class="text-gray-500 text-sm">${t.company}</p>
+                        </div>
+                    </div>
+                `;
+                track.appendChild(item);
+            });
+
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let carouselItems = document.querySelectorAll('.carousel-item');
+            let counter = 1; // Começa no primeiro item real
+            let itemWidth = carouselItems[0].clientWidth;
+
+            // Clona o primeiro e o último item para o loop infinito
+            const firstClone = carouselItems[0].cloneNode(true);
+            const lastClone = carouselItems[carouselItems.length - 1].cloneNode(true);
+            track.appendChild(firstClone);
+            track.insertBefore(lastClone, carouselItems[0]);
+            
+            // Atualiza a lista de itens
+            carouselItems = document.querySelectorAll('.carousel-item');
+            
+            // Posição inicial
+            track.style.transform = `translateX(-${itemWidth * counter}px)`;
+
+            nextBtn.addEventListener('click', () => {
+                if (counter >= carouselItems.length - 1) return;
+                track.style.transition = "transform 0.5s ease-in-out";
+                counter++;
+                track.style.transform = `translateX(-${itemWidth * counter}px)`;
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (counter <= 0) return;
+                track.style.transition = "transform 0.5s ease-in-out";
+                counter--;
+                track.style.transform = `translateX(-${itemWidth * counter}px)`;
+            });
+
+            track.addEventListener('transitionend', () => {
+                if (carouselItems[counter] === firstClone) {
+                    track.style.transition = 'none';
+                    counter = 1;
+                    track.style.transform = `translateX(-${itemWidth * counter}px)`;
+                }
+                if (carouselItems[counter] === lastClone) {
+                    track.style.transition = 'none';
+                    counter = carouselItems.length - 2;
+                    track.style.transform = `translateX(-${itemWidth * counter}px)`;
+                }
+            });
+            
+            window.addEventListener('resize', () => {
+                itemWidth = carouselItems[0].clientWidth;
+                track.style.transition = 'none';
+                track.style.transform = `translateX(-${itemWidth * counter}px)`;
+            });
+        });
+    </script>
+
+</body>
+</html>
