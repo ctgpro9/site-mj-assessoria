@@ -141,7 +141,7 @@
             <div class="container mx-auto px-6">
                 <h1 class="text-4xl md:text-6xl font-bold text-gray-800 leading-tight mb-4 animate-fade-in-down">Inteligência Contábil para o <span class="text-[#BF9270]">Sucesso</span> do seu Negócio</h1>
                 <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">Oferecemos mais que contabilidade, entregamos assessoria estratégica para impulsionar o crescimento da sua empresa.</p>
-                <a href="#contato" class="bg-[#BF9270] text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-opacity-90 transition-transform hover:scale-105">Fale com um Especialista</a>
+                <a href="https://wa.me/5551992197198" target="_blank" class="bg-[#BF9270] text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-opacity-90 transition-transform hover:scale-105">Fale com um Especialista</a>
             </div>
         </section>
 
@@ -274,7 +274,7 @@
 
             // Lógica da Seção de Depoimentos (Carrossel Infinito)
             const testimonials = [
-                { name: 'Gilson C.', company: 'Empresa de Beneficiamento de Metais', feedback: 'Excelente trabalho da MJ Assessoria! As melhores profissionais que temos na área contábil. Sempre precisas e atenciosas, transformaram a gestão da nossa empresa.' },
+                { name: 'Leonardo C.', company: 'Academia', feedback: 'Excelente trabalho da MJ Assessoria! As melhores profissionais que temos na área contábil. Sempre precisas e atenciosas, transformaram a gestão da nossa empresa.' },
                 { name: 'Marcio A.', company: 'Comércio', feedback: 'Minha empresa estava inativa desde 2012, com diversas pendências. Com a assessoria completa da MJ, consegui não apenas regularizar toda a situação, mas também realizar a baixa do CNPJ de forma segura e eficiente. Um serviço impecável.' },
                 { name: 'Eduardo P.', company: 'Assistência Informática', feedback: 'A MJ Assessoria é sinônimo de tranquilidade. Elas cuidam de toda a burocracia com uma agilidade impressionante, o que me permite focar 100% no meu negócio de TI. Recomendo de olhos fechados!' },
                 { name: 'Vagner L.', company: 'Startup de Tecnologia', feedback: 'Para uma startup, ter parceiros ágeis é fundamental. Encontramos na MJ a assessoria contábil que entende nosso ritmo e nos ajuda a crescer de forma sustentável e organizada. Essenciais para o nosso sucesso.' },
@@ -283,7 +283,7 @@
             ];
             const track = document.getElementById('carousel-track');
             
-            // Popula o carrossel com os depoimentos
+            // Popula o carrossel
             testimonials.forEach(t => {
                 const item = document.createElement('div');
                 item.className = 'carousel-item p-4';
@@ -299,56 +299,63 @@
                 track.appendChild(item);
             });
 
+            // Lógica do carrossel infinito
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
             let carouselItems = document.querySelectorAll('.carousel-item');
-            let counter = 1; // Começa no primeiro item real
-            let itemWidth = carouselItems[0].clientWidth;
+            const itemsCount = carouselItems.length;
+            let itemWidth = 0;
+            let counter = 1;
+            let isTransitioning = false;
 
-            // Clona o primeiro e o último item para o loop infinito
-            const firstClone = carouselItems[0].cloneNode(true);
-            const lastClone = carouselItems[carouselItems.length - 1].cloneNode(true);
-            track.appendChild(firstClone);
-            track.insertBefore(lastClone, carouselItems[0]);
-            
-            // Atualiza a lista de itens
-            carouselItems = document.querySelectorAll('.carousel-item');
-            
-            // Posição inicial
-            track.style.transform = `translateX(-${itemWidth * counter}px)`;
+            function setupCarousel() {
+                if (itemsCount <= 1) return;
 
-            nextBtn.addEventListener('click', () => {
-                if (counter >= carouselItems.length - 1) return;
-                track.style.transition = "transform 0.5s ease-in-out";
-                counter++;
-                track.style.transform = `translateX(-${itemWidth * counter}px)`;
-            });
+                const firstClone = carouselItems[0].cloneNode(true);
+                const lastClone = carouselItems[itemsCount - 1].cloneNode(true);
 
-            prevBtn.addEventListener('click', () => {
-                if (counter <= 0) return;
-                track.style.transition = "transform 0.5s ease-in-out";
-                counter--;
-                track.style.transform = `translateX(-${itemWidth * counter}px)`;
-            });
+                track.appendChild(firstClone);
+                track.insertBefore(lastClone, carouselItems[0]);
+                
+                carouselItems = document.querySelectorAll('.carousel-item');
+                
+                updateWidthAndPosition();
+            }
 
-            track.addEventListener('transitionend', () => {
-                if (carouselItems[counter] === firstClone) {
-                    track.style.transition = 'none';
-                    counter = 1;
-                    track.style.transform = `translateX(-${itemWidth * counter}px)`;
-                }
-                if (carouselItems[counter] === lastClone) {
-                    track.style.transition = 'none';
-                    counter = carouselItems.length - 2;
-                    track.style.transform = `translateX(-${itemWidth * counter}px)`;
-                }
-            });
-            
-            window.addEventListener('resize', () => {
-                itemWidth = carouselItems[0].clientWidth;
+            function updateWidthAndPosition() {
+                itemWidth = track.parentElement.clientWidth / (window.innerWidth < 768 ? 1 : window.innerWidth < 1024 ? 2 : 3);
                 track.style.transition = 'none';
                 track.style.transform = `translateX(-${itemWidth * counter}px)`;
+            }
+
+            function slide(direction) {
+                if (isTransitioning) return;
+                isTransitioning = true;
+                track.style.transition = 'transform 0.5s ease-in-out';
+                counter += direction;
+                track.style.transform = `translateX(-${itemWidth * counter}px)`;
+            }
+
+            nextBtn.addEventListener('click', () => slide(1));
+            prevBtn.addEventListener('click', () => slide(-1));
+
+            track.addEventListener('transitionend', () => {
+                isTransitioning = false;
+                if (counter >= itemsCount + 1) {
+                    counter = 1;
+                    track.style.transition = 'none';
+                    track.style.transform = `translateX(-${itemWidth * counter}px)`;
+                }
+                if (counter <= 0) {
+                    counter = itemsCount;
+                    track.style.transition = 'none';
+                    track.style.transform = `translateX(-${itemWidth * counter}px)`;
+                }
             });
+
+            window.addEventListener('resize', updateWidthAndPosition);
+
+            setupCarousel();
         });
     </script>
 
