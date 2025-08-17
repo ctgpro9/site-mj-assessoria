@@ -40,7 +40,7 @@
             margin-top: 2px; /* Ajustado para descer o texto */
         }
         .hero-section {
-            background: linear-gradient(to right, rgba(245, 235, 224, 0.9), rgba(245, 235, 224, 0.7)), url('https://images.unsplash.com/photo-1554224155-1696413565d3?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+            background: linear-gradient(to right, rgba(245, 235, 224, 0.5), rgba(245, 235, 224, 0.4)), url('https://github.com/ctgpro9/site-mj-assessoria/blob/main/fundo.jpg?raw=true') no-repeat center 75%/cover;
         }
         .service-card {
             transition: all 0.3s ease-in-out;
@@ -100,6 +100,24 @@
                 flex: 0 0 33.3333%;
             }
         }
+        /* Animação do botão Hero */
+        @keyframes pulse-glow {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(191, 146, 112, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 10px 15px rgba(191, 146, 112, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(191, 146, 112, 0);
+            }
+        }
+        .animate-pulse-glow {
+            animation: pulse-glow 2.5s infinite;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -141,7 +159,7 @@
             <div class="container mx-auto px-6">
                 <h1 class="text-4xl md:text-6xl font-bold text-gray-800 leading-tight mb-4 animate-fade-in-down">Inteligência Contábil para o <span class="text-[#BF9270]">Sucesso</span> do seu Negócio</h1>
                 <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">Oferecemos mais que contabilidade, entregamos assessoria estratégica para impulsionar o crescimento da sua empresa.</p>
-                <a href="https://wa.me/5551992197198" target="_blank" class="bg-[#BF9270] text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-opacity-90 transition-transform hover:scale-105">Fale com um Especialista</a>
+                <a href="https://wa.me/5551992197198" target="_blank" class="bg-[#BF9270] text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-opacity-90 transition-transform hover:scale-110 animate-pulse-glow">Fale com um Especialista</a>
             </div>
         </section>
 
@@ -177,8 +195,8 @@
                             <!-- Depoimentos serão inseridos aqui -->
                         </div>
                     </div>
-                    <button id="prevBtn" class="absolute top-1/2 left-0 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md z-10"><i class="fas fa-chevron-left text-[#BF9270]"></i></button>
-                    <button id="nextBtn" class="absolute top-1/2 right-0 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md z-10"><i class="fas fa-chevron-right text-[#BF9270]"></i></button>
+                    <button id="prevBtn" class="absolute top-1/2 -left-4 md:-left-6 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md z-10"><i class="fas fa-chevron-left text-[#BF9270]"></i></button>
+                    <button id="nextBtn" class="absolute top-1/2 -right-4 md:-right-6 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 shadow-md z-10"><i class="fas fa-chevron-right text-[#BF9270]"></i></button>
                 </div>
             </div>
         </section>
@@ -302,38 +320,42 @@
             // Lógica do carrossel infinito
             const prevBtn = document.getElementById('prevBtn');
             const nextBtn = document.getElementById('nextBtn');
-            let carouselItems = document.querySelectorAll('.carousel-item');
-            const itemsCount = carouselItems.length;
-            let itemWidth = 0;
-            let counter = 1;
+            const originalItems = Array.from(track.children);
+            const itemsCount = originalItems.length;
+            let counter = itemsCount;
             let isTransitioning = false;
 
-            function setupCarousel() {
-                if (itemsCount <= 1) return;
-
-                const firstClone = carouselItems[0].cloneNode(true);
-                const lastClone = carouselItems[itemsCount - 1].cloneNode(true);
-
-                track.appendChild(firstClone);
-                track.insertBefore(lastClone, carouselItems[0]);
-                
-                carouselItems = document.querySelectorAll('.carousel-item');
-                
-                updateWidthAndPosition();
+            function getVisibleItemsCount() {
+                if (window.innerWidth < 768) return 1;
+                if (window.innerWidth < 1024) return 2;
+                return 3;
             }
 
-            function updateWidthAndPosition() {
-                itemWidth = track.parentElement.clientWidth / (window.innerWidth < 768 ? 1 : window.innerWidth < 1024 ? 2 : 3);
-                track.style.transition = 'none';
+            function setupCarousel() {
+                if (itemsCount <= getVisibleItemsCount()) {
+                    prevBtn.style.display = 'none';
+                    nextBtn.style.display = 'none';
+                    return;
+                }
+
+                // Clonar itens para o efeito infinito
+                originalItems.forEach(item => track.appendChild(item.cloneNode(true)));
+                originalItems.slice().reverse().forEach(item => track.insertBefore(item.cloneNode(true), track.firstChild));
+                
+                updateCarouselPosition(false);
+            }
+
+            function updateCarouselPosition(transition = true) {
+                const itemWidth = track.querySelector('.carousel-item').clientWidth;
+                track.style.transition = transition ? 'transform 0.4s ease-in-out' : 'none';
                 track.style.transform = `translateX(-${itemWidth * counter}px)`;
             }
 
-            function slide(direction) {
+             function slide(direction) {
                 if (isTransitioning) return;
                 isTransitioning = true;
-                track.style.transition = 'transform 0.5s ease-in-out';
                 counter += direction;
-                track.style.transform = `translateX(-${itemWidth * counter}px)`;
+                updateCarouselPosition();
             }
 
             nextBtn.addEventListener('click', () => slide(1));
@@ -341,19 +363,22 @@
 
             track.addEventListener('transitionend', () => {
                 isTransitioning = false;
-                if (counter >= itemsCount + 1) {
-                    counter = 1;
-                    track.style.transition = 'none';
-                    track.style.transform = `translateX(-${itemWidth * counter}px)`;
-                }
-                if (counter <= 0) {
+                if (counter >= itemsCount * 2) {
                     counter = itemsCount;
-                    track.style.transition = 'none';
-                    track.style.transform = `translateX(-${itemWidth * counter}px)`;
+                    updateCarouselPosition(false);
+                }
+                if (counter < itemsCount) {
+                    counter = itemsCount * 2 - 1;
+                    updateCarouselPosition(false);
                 }
             });
 
-            window.addEventListener('resize', updateWidthAndPosition);
+            window.addEventListener('resize', () => {
+                // Pequeno timeout para garantir que o DOM foi renderizado antes de recalcular
+                setTimeout(() => {
+                    updateCarouselPosition(false);
+                }, 100);
+            });
 
             setupCarousel();
         });
